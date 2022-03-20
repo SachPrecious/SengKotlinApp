@@ -7,26 +7,32 @@ import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface  UsersService {
+interface  UserAPIService {
     @GET("users")
     fun getUsers(): Call<List<User>>
 
     @GET("users/{id}")
-    fun getUser(@Path("id") id : String):Call<User>
+    fun getUser(@Path("userId") id : String):Call<User>
+    companion object{
+        //Companion object is same like java static object
+        val API_URL ="https://jsonplaceholder.typicode.com"
+        fun create():UserAPIService{
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            return retrofit.create(UserAPIService::class.java)
+        }
+
+
+    }
 
 }
 
 
 
 class RetrofitConfigurations {
-  companion object{
-      val API_URL ="https://jsonplaceholder.typicode.com"
-      val retrofit = Retrofit.Builder()
-          .baseUrl(API_URL)
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
 
-      val UserService = retrofit.create(UsersService::class.java)
-
-  }
 }
