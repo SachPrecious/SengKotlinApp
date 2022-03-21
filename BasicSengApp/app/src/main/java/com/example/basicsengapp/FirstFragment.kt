@@ -1,18 +1,20 @@
 package com.example.basicsengapp
 
+//import javax.security.auth.callback.Callback
+
 import android.os.Bundle
-import android.telecom.Call
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.example.basicsengapp.api.UserAPIService
 import com.example.basicsengapp.databinding.FragmentFirstBinding
-import retrofit2.Response
-import javax.security.auth.callback.Callback
 import com.example.basicsengapp.model.User
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -40,27 +42,29 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonFirst.setOnClickListener{
 
-            val editText = binding.editText.editableText
-            val user = userAPIService.getUser(editText.toString());
+           val editText = binding.inputTextId.editableText
+           val user = userAPIService.getUser(editText.toString());
 
-           // val user = userAPIService.getUser("1");
+
+            // val user = userAPIService.getUser("1");
             Log.i("FirstFragment","buttonFirst")
 
-            user.enqueue(object : retrofit2.Callback<User> {
-                override fun onResponse(call: retrofit2.Call<User>, response: Response<User>) {
+            user.enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
                     val body =response.body()
                     body?.let {
                         Log.i("FirstFragment Name :",it.name)
-                        binding.textviewUserID.text="User ID "+it.id
-                        binding.textviewUserName.text="Name:  "+it.username
-                        binding.textviewUserEmail.text="Email:  "+it.email
-                        //binding.textviewUserWebsite.text="Website:  "+it.website
+
+                        binding.textviewName.text = it.name
+                        binding.textviewEmail.text = it.email
+                        binding.textviewUsername.text=it.username;
+                        binding.textviewId.text= it.id.toString()
 
                     }
 
                 }
 
-                override fun onFailure(call: retrofit2.Call<User>, t: Throwable) {
+                override fun onFailure(call: Call<User>, t: Throwable) {
                     Log.i("FirstFragment Name :",t.message!!)
                 }
 
